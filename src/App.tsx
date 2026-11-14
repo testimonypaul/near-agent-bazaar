@@ -2,12 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Activity, ArrowDownRight, ArrowUpRight, BookOpen, Bot, Check, ChevronLeft,
   ChevronRight, CircleHelp, Coins, Cpu, Globe2, Info, Landmark, Play,
-  RefreshCw, ShieldCheck, ShoppingCart, Sparkles, Store, Wallet, X, Zap
+  RefreshCw, ShieldCheck, ShoppingCart, Sparkles, Wallet, X, Zap
 } from 'lucide-react';
 import { advanceMarket, loadWorld, priceOf, saveWorld, trade, type ItemId, type World } from './engine';
 
 const money = (n: number) => n.toLocaleString('en-US', { maximumFractionDigits: 1 });
 const TOUR_KEY = 'near-agent-bazaar-tour-v1';
+
+type SectionId = 'market' | 'agents' | 'activity';
 
 type TourStep = {
   target: 'market' | 'trade' | 'agents' | 'activity' | 'network' | null;
@@ -64,6 +66,10 @@ const tourSteps: TourStep[] = [
 
 export default function App() {
   const [world, setWorld] = useState<World>(() => loadWorld());
+  const [activeSection, setActiveSection] = useState<SectionId>(() => {
+    const hash = window.location.hash.slice(1);
+    return hash === 'agents' || hash === 'activity' ? hash : 'market';
+  });
   const [merchantId, setMerchantId] = useState('max');
   const [selected, setSelected] = useState<ItemId>('crystal');
   const [quantity, setQuantity] = useState(1);
@@ -83,6 +89,16 @@ export default function App() {
   const tourStep = tourOpen ? tourSteps[tourIndex] : undefined;
   const tourTarget = (target: TourStep['target']) => Boolean(tourOpen && tourStep?.target === target);
   const classFor = (base: string, target: TourStep['target']) => tourTarget(target) ? base + ' tour-focus' : base;
+  const navClass = (section: SectionId) => activeSection === section ? 'side-link active' : 'side-link';
+
+  useEffect(() => {
+    const syncActiveSection = () => {
+      const hash = window.location.hash.slice(1);
+      if (hash === 'market' || hash === 'agents' || hash === 'activity') setActiveSection(hash);
+    };
+    window.addEventListener('hashchange', syncActiveSection);
+    return () => window.removeEventListener('hashchange', syncActiveSection);
+  }, []);
 
   useEffect(() => {
     try { saveWorld(world); } catch { /* The demo remains usable if browser storage is unavailable. */ }
@@ -133,9 +149,9 @@ export default function App() {
       <div className="network-pill"><span className="pulse" /> DEMO SIMULATION <span className="network-right">LOCAL</span></div>
       <nav className="side-nav" aria-label="Dashboard sections">
         <div className="side-label">YOUR WORLD</div>
-        <a className="side-link active" href="#market"><Globe2 size={17} /> Market board</a>
-        <a className="side-link" href="#agents"><Bot size={17} /> Merchant agents <span className="side-count">{String(world.merchants.length).padStart(2, '0')}</span></a>
-        <a className="side-link" href="#activity"><Activity size={17} /> Activity feed</a>
+        <a className={navClass('market')} aria-current={activeSection === 'market' ? 'location' : undefined} onClick={() => setActiveSection('market')} href="#market"><Globe2 size={17} /> Market board</a>
+        <a className={navClass('agents')} aria-current={activeSection === 'agents' ? 'location' : undefined} onClick={() => setActiveSection('agents')} href="#agents"><Bot size={17} /> Merchant agents <span className="side-count">{String(world.merchants.length).padStart(2, '0')}</span></a>
+        <a className={navClass('activity')} aria-current={activeSection === 'activity' ? 'location' : undefined} onClick={() => setActiveSection('activity')} href="#activity"><Activity size={17} /> Activity feed</a>
       </nav>
       <div className="side-bottom">
         <div className="side-label">NETWORK STATUS</div>
