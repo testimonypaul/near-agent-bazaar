@@ -36,10 +36,11 @@ These are transparent rule-based policies. They do not call an LLM or act contin
 
 ## Run it locally
 
-Requirements: Node.js 20 or newer and npm.
+Requirements: Node.js 24.12 or newer and npm. The regression tests use Node.js's built-in TypeScript support.
 
 ~~~bash
 npm install
+npm test
 npm run build
 npm run dev
 ~~~
