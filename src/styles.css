@@ -84,3 +84,45 @@
 /* NEAR Agent Bazaar mascot brand asset */
 .brand-mark{overflow:hidden;padding:0;background:#081522;border:1px solid #27c8eb;box-shadow:0 0 24px #16bfe544;}
 .brand-mark img{display:block;width:100%;height:100%;object-fit:cover;}
+
+
+/* Judge-facing concept summary and readable default sizing */
+.concept-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  margin: 0 0 16px;
+  padding: 15px 18px;
+  border: 1px solid #1d4055;
+  border-radius: 10px;
+  background: linear-gradient(105deg, #0c2638, #0a1b2a 72%);
+}
+.concept-copy { min-width: 0; }
+.concept-copy h2 { margin: 5px 0 4px; color: #e8f7ff; font-size: 14px; letter-spacing: -.25px; }
+.concept-copy p { max-width: 720px; margin: 0; color: #91aabd; font-size: 10px; line-height: 1.65; }
+.concept-flow { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; flex: none; }
+.concept-flow span { padding: 7px 9px; border: 1px solid #24526a; border-radius: 6px; background: #0c2a3d; color: #a9eefa; font: 8px 'DM Mono'; white-space: nowrap; }
+.concept-flow b { color: #43cce8; font-size: 11px; }
+
+/* Lift the smallest desktop labels without disturbing the compact market grid. */
+.panel-subtitle, .stat-foot, .market-note, .trade-summary, .agent-card p, .activity-item p { font-size: 10px; }
+.field-label { font-size: 9px; }
+.merchant-chip, .asset-option, .trade-actions button, .cycle-btn { font-size: 10px; }
+.table-head { font-size: 9px; }
+.asset-name b { font-size: 11px; }
+.asset-name small { font-size: 9px; }
+.agent-role { font-size: 9px; }
+.agent-card-stats span { font-size: 8px; }
+.agent-card-stats b { font-size: 10px; }
+.activity-item small { font-size: 8px; }
+.simulation-warning { font-size: 9px; }
+@media(max-width:760px) {
+  .concept-strip { display:block; padding:13px; }
+  .concept-copy h2 { font-size:13px; }
+  .concept-flow { justify-content:flex-start; gap:5px; margin-top:11px; }
+  .concept-flow span { padding:6px 7px; font-size:7px; }
+}
+@media(max-width:390px) {
+  .concept-flow span { font-size:6px; padding:6px 5px; }
+}
