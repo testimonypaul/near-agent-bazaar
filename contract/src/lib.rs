@@ -1,4 +1,4 @@
-use near_sdk::{env, near, AccountId, PanicOnDefault, Promise};
+use near_sdk::{env, near, AccountId, PanicOnDefault};
 use near_sdk::collections::LookupMap;
 use near_sdk::json_types::U128;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
@@ -38,7 +38,7 @@ impl Contract {
     /// Register a merchant account. The caller controls its merchant inventory.
     pub fn register_merchant(&mut self) {
         let account = env::predecessor_account_id();
-        require!(!self.merchants.contains_key(&account), "Merchant already registered");
+        near_sdk::require!(!self.merchants.contains_key(&account), "Merchant already registered");
         self.merchants.insert(&account, &Merchant {
             owner: account.clone(), treasury: 0,
             inventory: LookupMap::new(format!("i:{}", account).as_bytes().to_vec()),
@@ -66,13 +66,13 @@ impl Contract {
     /// Transfer a listed item unit count between two registered merchant inventories.
     /// This is an inventory ledger operation, not an FT transfer.
     pub fn transfer_item(&mut self, seller_id: AccountId, buyer_id: AccountId, item_id: String, amount: u64) {
-        require!(amount > 0, "Amount must be positive");
+        near_sdk::require!(amount > 0, "Amount must be positive");
         let caller = env::predecessor_account_id();
-        require!(caller == seller_id || caller == buyer_id || caller == self.owner, "Not authorized");
+        near_sdk::require!(caller == seller_id || caller == buyer_id || caller == self.owner, "Not authorized");
         let mut seller = self.merchants.get(&seller_id).expect("Unknown seller");
         let mut buyer = self.merchants.get(&buyer_id).expect("Unknown buyer");
         let seller_amount = seller.inventory.get(&item_id).unwrap_or(0);
-        require!(seller_amount >= amount, "Insufficient inventory");
+        near_sdk::require!(seller_amount >= amount, "Insufficient inventory");
         seller.inventory.insert(&item_id, &(seller_amount - amount));
         let buyer_amount = buyer.inventory.get(&item_id).unwrap_or(0);
         buyer.inventory.insert(&item_id, &buyer_amount.checked_add(amount).expect("Inventory overflow"));
@@ -88,5 +88,5 @@ impl Contract {
         self.merchants.get(&account_id).and_then(|m| m.inventory.get(&item_id)).unwrap_or(0)
     }
 
-    fn assert_owner(&self) { require!(env::predecessor_account_id() == self.owner, "Owner only"); }
+    fn assert_owner(&self) { near_sdk::require!(env::predecessor_account_id() == self.owner, "Owner only"); }
 }
