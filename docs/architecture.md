@@ -2,7 +2,7 @@
 
 ## Demo runtime
 
-The React client loads a versioned world snapshot from browser local storage. The local simulation starts with seeded player resources and merchant inventories, but starts trade volume and merchant action counters at zero so the dashboard does not imply unperformed activity.
+The React client loads a versioned world snapshot from browser local storage. The local simulation starts with seeded player resources and merchant inventories, but starts trade volume and player-to-merchant deal counters at zero so the dashboard does not imply unperformed activity.
 
 The market engine uses a transparent price formula based on demand and supply. Background market movement contains bounded randomness; merchant decisions are rule-based and are evaluated once per market cycle.
 
