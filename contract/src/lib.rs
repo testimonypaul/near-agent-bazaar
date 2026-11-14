@@ -68,7 +68,7 @@ impl Contract {
     pub fn transfer_item(&mut self, seller_id: AccountId, buyer_id: AccountId, item_id: String, amount: u64) {
         near_sdk::require!(amount > 0, "Amount must be positive");
         let caller = env::predecessor_account_id();
-        near_sdk::require!(caller == seller_id || caller == buyer_id || caller == self.owner, "Not authorized");
+        near_sdk::require!(caller == seller_id || caller == self.owner, "Seller or contract owner only");
         let mut seller = self.merchants.get(&seller_id).expect("Unknown seller");
         let mut buyer = self.merchants.get(&buyer_id).expect("Unknown buyer");
         let seller_amount = seller.inventory.get(&item_id).unwrap_or(0);
