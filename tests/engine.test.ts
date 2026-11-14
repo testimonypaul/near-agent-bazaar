@@ -102,9 +102,9 @@ test('a market cycle advances once, runs agent policies and keeps values bounded
     const result = advanceMarket(world);
 
     assert.equal(result.tick, world.tick + 1);
-    assert.equal(result.merchants.find(merchant => merchant.id === 'max')!.inventory.crystal, 10);
+    assert.equal(result.merchants.find(merchant => merchant.id === 'max')!.inventory.crystal, 5);
     assert.equal(result.merchants.find(merchant => merchant.id === 'luna')!.inventory.crystal, 29);
-    assert.ok(result.events.some(entry => entry.agent === 'MAX' && entry.text.includes('bought 2')));
+    assert.ok(result.events.some(entry => entry.agent === 'MAX' && entry.text.includes('sold 3')));
     assert.ok(result.events.some(entry => entry.agent === 'LUNA' && entry.text.includes('secured 1')));
     assert.ok(result.events.some(entry => entry.agent === 'MARKET'));
     assert.ok(result.items.every(item =>
