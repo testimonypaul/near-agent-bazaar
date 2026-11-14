@@ -202,6 +202,17 @@ export default function App() {
         </div>
       </section>
 
+      <section className="concept-strip" aria-label="What makes this economy different">
+        <div className="concept-copy">
+          <div className="eyebrow">THE IDEA BEHIND THE GAME</div>
+          <h2>What if the merchants ran the market?</h2>
+          <p>Instead of static shop menus, players change a shared economy. Each market cycle lets Max, Luna and Rex respond to supply and demand in their own way.</p>
+        </div>
+        <div className="concept-flow" aria-label="Player trades affect the market, which shapes agent decisions">
+          <span>PLAYER TRADES</span><b>→</b><span>MARKET SHIFTS</span><b>→</b><span>AGENT DECISIONS</span>
+        </div>
+      </section>
+
       <section className="market-layout">
         <div id="market" className={classFor('panel market-panel', 'market')} data-tour="market">
           <div className="panel-heading">
