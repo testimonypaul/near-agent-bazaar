@@ -186,9 +186,9 @@ export default function App() {
           <div className="stat-foot">Your spending balance in this demo</div>
         </div>
         <div className="stat-card">
-          <div className="stat-head">TRADE VOLUME <Activity size={16} /></div>
+          <div className="stat-head">PLAYER TRADE VOLUME <Activity size={16} /></div>
           <strong>{money(world.volume)} <small>CR</small></strong>
-          <div className="stat-foot">Total value of simulated trades</div>
+          <div className="stat-foot">Value of your completed demo trades</div>
         </div>
         <div className="stat-card">
           <div className="stat-head">MERCHANT AGENTS <Bot size={16} /></div>
@@ -276,7 +276,7 @@ export default function App() {
           <div className="agent-grid">{world.merchants.map(m => <article className="agent-card" key={m.id}>
             <div className="agent-card-top"><div className={'agent-avatar ' + m.color}>{m.avatar}</div><span className="agent-state"><i />{m.mood}</span></div>
             <h3>{m.name}</h3><div className="agent-role">{m.role}</div><p>{m.strategy}</p>
-            <div className="agent-card-stats"><span>TRADE ACTIONS <b>{m.trades}</b></span><span>TREASURY <b>{money(m.treasury)} CR</b></span></div>
+            <div className="agent-card-stats"><span>PLAYER DEALS <b>{m.trades}</b></span><span>TREASURY <b>{money(m.treasury)} CR</b></span></div>
           </article>)}</div>
         </div>
 
