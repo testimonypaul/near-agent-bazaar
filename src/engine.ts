@@ -57,27 +57,79 @@ export function trade(world: World, merchantId: string, itemId: ItemId, side: 'b
   return { world: next };
 }
 export function advanceMarket(world: World): World {
-  const next = structuredClone(world); next.tick += 1;
+  const next = structuredClone(world);
+  next.tick += 1;
+
+  // Market shocks are bounded; agent policy decisions run after the new quotes.
   next.items.forEach(item => {
     item.demand = Math.max(12, Math.min(96, item.demand + (Math.random() * 8 - 3.8)));
     item.stock = Math.max(5, Math.min(120, item.stock + (Math.random() * 8 - 3.5)));
   });
-  next.merchants.forEach((m, i) => {
-    const focus: ItemId = (['wood', 'crystal', 'iron'] as ItemId[])[(next.tick + i) % 3];
-    const item = next.items.find(x => x.id === focus)!;
-    if (item.demand > 67 && m.inventory[focus] > 2) {
-      const amount = Math.min(2 + (i % 2), m.inventory[focus]);
-      m.inventory[focus] -= amount; m.treasury += amount * priceOf(item) * 0.7; item.stock += amount;
-      m.mood = 'Selling into demand';
-      next.events.unshift(event(next, m.name, `Released ${amount} ${item.name.toLowerCase()} into a high-demand market.`, 'agent'));
-    } else if (item.stock < 38 && m.treasury > item.base * 5) {
-      const amount = 2; const cost = amount * priceOf(item) * 0.8;
-      m.inventory[focus] += amount; m.treasury -= cost; item.stock += amount;
-      m.mood = 'Restocking inventory';
-      next.events.unshift(event(next, m.name, `Restocked ${amount} ${item.name.toLowerCase()} while supply was low.`, 'agent'));
-    } else { m.mood = ['Studying demand', 'Balancing reserves', 'Scanning opportunities'][i]; }
+
+  next.merchants.forEach((merchant, index) => {
+    const crystal = next.items.find(x => x.id === 'crystal')!;
+    const wood = next.items.find(x => x.id === 'wood')!;
+    const iron = next.items.find(x => x.id === 'iron')!;
+    let action = 'Studying demand';
+
+    if (merchant.id === 'max') {
+      // Max is an opportunist: target the strongest demand/stock imbalance.
+      const target = [...next.items].sort((a, b) => (b.demand - b.stock * 0.45) - (a.demand - a.stock * 0.45))[0];
+      if (target.demand > 63 && merchant.inventory[target.id] > 3) {
+        const amount = Math.min(3, merchant.inventory[target.id]);
+        merchant.inventory[target.id] -= amount;
+        merchant.treasury += amount * priceOf(target) * 0.82;
+        target.stock += amount;
+        action = `sold ${amount} ${target.name.toLowerCase()} into a demand spike`;
+      } else if (target.stock < 45 && merchant.treasury > priceOf(target) * 6) {
+        const amount = 2;
+        merchant.inventory[target.id] += amount;
+        merchant.treasury -= amount * priceOf(target) * 0.78;
+        target.stock += amount;
+        action = `bought ${amount} ${target.name.toLowerCase()} while supply was tight`;
+      }
+    } else if (merchant.id === 'luna') {
+      // Luna protects a rare-crystal reserve and only releases it at premium demand.
+      if (crystal.demand > 84 && merchant.inventory.crystal > 8) {
+        const amount = 2;
+        merchant.inventory.crystal -= amount;
+        merchant.treasury += amount * priceOf(crystal) * 0.9;
+        crystal.stock += amount;
+        action = 'released 2 Aether Crystals at a premium';
+      } else if (crystal.stock < 30 && merchant.treasury > priceOf(crystal) * 4) {
+        merchant.inventory.crystal += 1;
+        merchant.treasury -= priceOf(crystal) * 0.85;
+        crystal.stock += 1;
+        action = 'secured 1 Aether Crystal for its reserve';
+      } else {
+        action = 'protected its rare-crystal reserve';
+      }
+    } else {
+      // Rex is a volume operator: keep core construction materials flowing.
+      const target = wood.stock < iron.stock ? wood : iron;
+      if (target.stock < 48 && merchant.treasury > priceOf(target) * 5) {
+        merchant.inventory[target.id] += 3;
+        merchant.treasury -= 3 * priceOf(target) * 0.72;
+        target.stock += 3;
+        action = `restocked 3 units of ${target.name.toLowerCase()}`;
+      } else if (wood.demand > 70 && merchant.inventory.wood > 5) {
+        merchant.inventory.wood -= 2;
+        merchant.treasury += 2 * priceOf(wood) * 0.8;
+        wood.stock += 2;
+        action = 'released 2 Ancient Wood to builders';
+      } else {
+        action = 'balanced construction-material reserves';
+      }
+    }
+
+    merchant.mood = action[0].toUpperCase() + action.slice(1);
+    if (action !== 'Studying demand') {
+      next.events.unshift(event(next, merchant.name, action + '.', 'agent'));
+    }
   });
-  next.events.unshift(event(next, 'MARKET', `Market cycle #${next.tick} completed. Prices recalculated from supply and demand.`, 'market'));
-  next.events = next.events.slice(0, 12); return next;
+
+  next.events.unshift(event(next, 'MARKET', `Market cycle #${next.tick} completed. Three merchant policies evaluated the new supply and demand.`, 'market'));
+  next.events = next.events.slice(0, 12);
+  return next;
 }
 export const starterWorld = initial;
