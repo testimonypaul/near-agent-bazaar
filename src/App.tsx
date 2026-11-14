@@ -127,7 +127,7 @@ export default function App() {
   return <div className="app-shell">
     <aside className="sidebar">
       <div className="brand">
-        <div className="brand-mark"><Store size={21} /></div>
+        <div className="brand-mark"><img src="/agent-bazaar-icon.webp" alt="NEAR Agent Bazaar mascot" /></div>
         <div><b>AGENT<span>BAZAAR</span></b><small>NEAR ECONOMY LAB</small></div>
       </div>
       <div className="network-pill"><span className="pulse" /> DEMO SIMULATION <span className="network-right">LOCAL</span></div>
