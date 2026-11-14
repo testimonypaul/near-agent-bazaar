@@ -173,9 +173,9 @@ export function advanceMarket(world: World): World {
         merchant.treasury += amount * priceOf(target) * 0.82;
         target.stock += amount;
         action = 'sold ' + amount + ' ' + target.name.toLowerCase() + ' into a demand spike';
-      } else if (target.stock > 5 && target.stock < 45 && merchant.treasury > priceOf(target) * 6) {
+      } else if (target.stock >= 6 && target.stock < 45 && merchant.treasury > priceOf(target) * 6) {
         // Max buys available stock to hold in reserve: available supply falls.
-        const amount = Math.min(2, target.stock - 5);
+        const amount = Math.min(2, Math.floor(target.stock - 5));
         merchant.inventory[target.id] += amount;
         merchant.treasury -= amount * priceOf(target) * 0.78;
         target.stock -= amount;
@@ -188,7 +188,7 @@ export function advanceMarket(world: World): World {
         merchant.treasury += amount * priceOf(crystal) * 0.9;
         crystal.stock += amount;
         action = 'released ' + amount + ' Aether Crystals at a premium';
-      } else if (crystal.stock > 5 && crystal.stock < 30 && merchant.treasury > priceOf(crystal) * 4) {
+      } else if (crystal.stock >= 6 && crystal.stock < 30 && merchant.treasury > priceOf(crystal) * 4) {
         merchant.inventory.crystal += 1;
         merchant.treasury -= priceOf(crystal) * 0.85;
         crystal.stock -= 1;
@@ -198,8 +198,8 @@ export function advanceMarket(world: World): World {
       }
     } else if (merchant.id === 'rex') {
       const target = wood.stock < iron.stock ? wood : iron;
-      if (target.stock > 5 && target.stock < 48 && merchant.treasury > priceOf(target) * 5) {
-        const amount = Math.min(3, target.stock - 5);
+      if (target.stock >= 6 && target.stock < 48 && merchant.treasury > priceOf(target) * 5) {
+        const amount = Math.min(3, Math.floor(target.stock - 5));
         merchant.inventory[target.id] += amount;
         merchant.treasury -= amount * priceOf(target) * 0.72;
         target.stock -= amount;
