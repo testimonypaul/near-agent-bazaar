@@ -89,6 +89,12 @@ export default function App() {
   }, [world]);
 
   useEffect(() => {
+    if (!tourOpen || !tourStep?.target) return;
+    const target = document.querySelector(`[data-tour="${tourStep.target}"]`);
+    target?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [tourOpen, tourIndex]);
+
+  useEffect(() => {
     if (!auto) return;
     const timer = window.setInterval(() => setWorld(w => advanceMarket(w)), 6500);
     return () => window.clearInterval(timer);
@@ -133,7 +139,7 @@ export default function App() {
       </nav>
       <div className="side-bottom">
         <div className="side-label">NETWORK STATUS</div>
-        <div className={classFor('network-card', 'network')} data-tour="network">
+        <div className="network-card">
           <div className="network-icon"><Landmark size={17} /></div>
           <div><b>NEAR Protocol</b><small>Integration planned · not connected</small></div>
           <span className="status-dot" />
@@ -148,7 +154,7 @@ export default function App() {
           <div className="eyebrow">WORLD SIMULATION <span /> CYCLE #{world.tick}</div>
           <h1>Welcome to the <span>living market.</span></h1>
           <p>Trade resources, meet independent merchants and see how your choices shape a tiny economy.</p>
-          <div className="plain-language-note"><Info size={13} /> CR means demo credits. This is a local simulation—not real NEAR or token activity.</div>
+          <div className={classFor("plain-language-note", "network")} data-tour="network"><Info size={13} /> CR means demo credits. This is a local simulation—not real NEAR or token activity.</div>
         </div>
         <div className="top-actions">
           <div className="demo-badge"><span /> LOCAL DEMO</div>
