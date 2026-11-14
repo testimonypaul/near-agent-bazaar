@@ -1,17 +1,17 @@
 # NEAR Agent Bazaar
 
-**Autonomous AI merchants. A living player-driven economy. Built on NEAR.**
+**Autonomous merchant agents. A living player-driven economy. Built for NEAR.**
 
-NEAR Agent Bazaar is a game-economy prototype where autonomous merchant agents manage inventory, react to supply and demand, negotiate trades, and settle item transfers through NEAR smart contracts.
+NEAR Agent Bazaar is a game-economy prototype where autonomous merchant agents manage inventory and react to supply and demand. The current browser demo runs transparent rule-based agent policies; the NEAR contract is an initial on-chain inventory-ledger scaffold.
 
 > Current milestone: playable local simulation + NEAR testnet integration scaffold. The simulation is clearly labelled; no simulated trade is represented as an on-chain transaction.
 
 ## What works in this MVP
 
-- Three distinct merchant agents with different strategies and finite treasuries.
+- Three distinct policy-driven merchant agents (opportunist, collector and industrialist) with finite treasuries.
 - Dynamic market prices based on inventory pressure and recent demand.
 - Player buy/sell actions, merchant inventory, treasury and activity feed.
-- A deterministic market tick that lets agents independently decide to restock or sell.
+- Market cycles that let each agent independently decide to restock, hold reserves or sell into demand.
 - Persistent demo state in browser local storage.
 - NEAR testnet contract scaffold and environment-based contract configuration.
 
@@ -38,7 +38,7 @@ VITE_NEAR_NETWORK=testnet
 VITE_NEAR_CONTRACT_ID=
 ```
 
-The UI works in demo mode without a wallet or deployed contract. On-chain mode must only be enabled after deploying the contract and wiring a compatible NEAR wallet.
+The UI currently works in demo mode without a wallet or deployed contract. Wallet connection and live browser-to-contract settlement are not implemented yet.
 
 ## Smart contract
 
@@ -46,7 +46,7 @@ The `contract/` directory contains the NEAR contract source. Build with the NEAR
 
 ## Demo honesty
 
-Demo mode uses browser state and simulated agent decisions. It does not move real tokens. The on-chain contract scaffold is separate and must be deployed/configured before claiming live settlement.
+Demo mode uses browser state, simulated credits and rule-based agent decisions. It does not move real tokens. The contract is not yet connected to the UI and its inventory ledger is not a NEP-245 token implementation. Do not present demo trades as on-chain transactions.
 
 ## Roadmap
 
